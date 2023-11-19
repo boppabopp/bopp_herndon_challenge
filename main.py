@@ -1,75 +1,86 @@
-# setting up pygame
 import pygame
 from plebe1 import *
 from helpers import *
 from herndon import *
 from platforms import *
+from random import randint
+
 pygame.init()
+
 # make the clock
 clock = pygame.time.Clock()
-# set resolution of game window
+
+# set resolution of the game window
 WIDTH = 1080
 HEIGHT = 720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 # make the background (only once)
 background = make_background(screen)
 
+# create the Plebe sprite
 plebe1 = Plebe(screen)
 plebe_group = pygame.sprite.Group()
 plebe_group.add(plebe1)
 
+# create the Herndon sprite
 herndon1 = Herndon(screen)
 herndon_group = pygame.sprite.Group()
 herndon_group.add(herndon1)
 
-platform1 = Platform(screen)
+# create platforms
 platform_group = pygame.sprite.Group()
-platform_group.add(platform1)
-
-clock = pygame.time.Clock()
+range_of_herndon_y_1 = (640, 660)
+for j in range(5):
+    random_y = randint(range_of_herndon_y_1[0], range_of_herndon_y_1[1])
+    random_y -= j * 100
+    platform = Platform(screen, random_y)
+    platform_group.add(platform)
 
 running = True
 while running:
-    # get events
-    clock.tick(60)
-
     for event in pygame.event.get():
-        # if we quit, the game closes
         if event.type == pygame.QUIT:
             running = False
-
-        # if we press the left or right arrow keys, the plebe moves left or right one space
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                plebe1.velocity_x += 10
+                plebe1.velocity_x += 6
             if event.key == pygame.K_LEFT:
-                plebe1.velocity_x -= 10
+                plebe1.velocity_x -= 6
             if event.key == pygame.K_UP:
                 plebe1.jump()
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
-                plebe1.velocity_x -= 10
+                plebe1.velocity_x -= 6
             if event.key == pygame.K_LEFT:
-                plebe1.velocity_x += 10
+                plebe1.velocity_x += 6
 
-    # put background on the screen
+        if (
+            herndon1.rect.midtop[1] + 20 <= plebe1.rect.bottom <= herndon1.rect.midtop[1] - 20
+            and (herndon1.rect.centerx - 20 <= plebe1.rect.centerx <= herndon1.rect.centerx + 20)
+        ):
+            # You can add game over logic here
+            print("Game Over!")
+            running = False
+
+
+    # Put background on the screen
     screen.blit(background, (0, 0))
 
-
-    # put herndon on screen
-    herndon_group.update(screen)
+    # Draw entities
     herndon_group.draw(screen)
+    herndon1.draw(screen)
+    herndon1.update(screen)
 
-    # put platforms on screen
-    platform_group.update(screen)
     platform_group.draw(screen)
 
-    # continuously update the groups
-    plebe_group.update(screen, platform_group)
     plebe_group.draw(screen)
 
-
+    # Update entities
+    plebe_group.update(screen, platform_group)
+    herndon_group.update(screen)
+    platform_group.update(screen)
     # flip the display so that we can see what we did
     pygame.display.flip()
 
