@@ -12,22 +12,29 @@ class Plebe(pygame.sprite.Sprite):
         self.velocity_y = 0
         self.jumping = False
 
-    def update(self, screen):
-        self.velocity_y += 0.2
-        self.rect.x += self.velocity_x/9
-        self.rect.y += self.velocity_y * 0.1
+    def update(self, screen, platforms):
+        self.velocity_y += 2
+        self.rect.x += self.velocity_x
+        self.rect.y += self.velocity_y
 
         if self.rect.y >= screen.get_height() - self.rect.height:
             self.rect.y = screen.get_height() - self.rect.height
             self.velocity_y = 0
             self.jumping = False
 
-        print("Velocity_x:", self.velocity_x)
+        for platform in platforms:
+            print(f'Plebe Rect: {self.rect}, Platform Rect: {platform.rect}')
+            if self.rect.colliderect(platform.rect):
+                    if self.rect.bottom <= platform.rect.top:
+                        print('Collision Detected!')
+                        self.velocity_y = 0
+                        self.rect.y = platform.rect.y - self.rect.height
+                        self.jumping = False
 
     def jump(self):
         if not self.jumping:
             self.jumping = True
-            self.velocity_y = -40
+            self.velocity_y = -25
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
