@@ -17,9 +17,6 @@ class Herndon(pygame.sprite.Sprite):
         # Draw the tower
         pygame.draw.rect(temp_surface, (170, 170, 170), (0, 0, 300, 500))
 
-        # Draw the triangle on the temporary surface
-        self.draw_triangle()
-
         # Draw the temporary surface onto the screen
         screen.blit(temp_surface, self.rect.topleft)
     def update(self, screen):

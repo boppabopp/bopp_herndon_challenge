@@ -56,8 +56,8 @@ while running:
             if event.key == pygame.K_LEFT:
                 plebe1.velocity_x += 6
 
-        if ((herndon1.rect.top - 100 >= plebe1.rect.y) and
-            (herndon1.rect.centerx - 50 <= plebe1.rect.centerx >= herndon1.rect.centerx + 50)):
+        if ((herndon1.rect.top - 150 >= plebe1.rect.y) and
+            (herndon1.rect.centerx - 15 <= plebe1.rect.centerx <= herndon1.rect.centerx + 15)):
             print("Game Over!")
             running = False
 
@@ -78,7 +78,7 @@ while running:
     plebe_group.draw(screen)
 
     # Update entities
-    plebe_group.update(screen, platform_group, herndon_group)
+    plebe_group.update(screen, platform_group)
     herndon_group.update(screen)
     platform_group.update(screen)
     # flip the display so that we can see what we did
