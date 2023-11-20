@@ -31,7 +31,7 @@ herndon_group.add(herndon1)
 # create platforms
 platform_group = pygame.sprite.Group()
 range_of_herndon_y_1 = (640, 660)
-for j in range(8):
+for j in range(9):
     random_y = randint(range_of_herndon_y_1[0], range_of_herndon_y_1[1])
     random_y -= j * 60
     platform = Platform(screen, random_y)
@@ -56,15 +56,11 @@ while running:
             if event.key == pygame.K_LEFT:
                 plebe1.velocity_x += 6
 
-        triangle_points = [(herndon1.rect.midtop[0] - 150, herndon1.rect.top),
-                         (herndon1.rect.midtop[0], herndon1.rect.top - 100),
-                        (herndon1.rect.midtop[0] + 150, herndon1.rect.top)]
-        plebe_bottom = plebe1.rect.bottom
-        triangle_rect = pygame.Rect(herndon1.rect.midtop[0] - 150, herndon1.rect.top - 80, 300, 100)
-        if triangle_rect.colliderect(plebe1.rect):
-            # Collision detected, end the game
+        if ((herndon1.rect.top - 100 >= plebe1.rect.y) and
+            (herndon1.rect.centerx - 50 <= plebe1.rect.centerx >= herndon1.rect.centerx + 50)):
             print("Game Over!")
             running = False
+
     # Put background on the screen
     screen.blit(background, (0, 0))
 
@@ -82,7 +78,7 @@ while running:
     plebe_group.draw(screen)
 
     # Update entities
-    plebe_group.update(screen, platform_group)
+    plebe_group.update(screen, platform_group, herndon_group)
     herndon_group.update(screen)
     platform_group.update(screen)
     # flip the display so that we can see what we did

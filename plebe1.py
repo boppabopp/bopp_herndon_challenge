@@ -1,4 +1,5 @@
 import pygame
+from herndon import *
 class Plebe(pygame.sprite.Sprite):
 
     def __init__(self, screen):
@@ -12,7 +13,7 @@ class Plebe(pygame.sprite.Sprite):
         self.velocity_y = 0
         self.jumping = False
 
-    def update(self, screen, platforms):
+    def update(self, screen, platforms, herndon):
         self.velocity_y += 0.2
         self.rect.x += self.velocity_x/9
         self.rect.y += self.velocity_y/9
