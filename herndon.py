@@ -1,23 +1,27 @@
 import pygame
+import sys
 
 
 class Herndon(pygame.sprite.Sprite):
     def __init__(self, screen):
         super().__init__()
 
-        # Create the main tower surface
-        self.image = pygame.Surface((300, 500), pygame.SRCALPHA)
+        # Set the height of the tower to the full height of the screen
+        self.width = 300
+        self.height = 500
+        self.image = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
-        self.rect.midbottom = (screen.get_width() // 2 + 80, 660)
+
+        # Set the position of the tower's bottom center
+        self.rect.midbottom = (screen.get_width() // 2 + 80, screen.get_height())
+
+        # Draw the tower on the surface
+        pygame.draw.rect(self.image, (170, 170, 170), (0, 0, self.width, self.height))
 
     def draw(self, screen):
-        # Create a temporary surface to hold the tower and triangle
-        temp_surface = pygame.Surface((300, 500), pygame.SRCALPHA)
+        # Draw the tower on the screen
+        screen.blit(self.image, self.rect.topleft)
 
-        # Draw the tower
-        pygame.draw.rect(temp_surface, (170, 170, 170), (0, 0, 300, 500))
-
-        # Draw the temporary surface onto the screen
-        screen.blit(temp_surface, self.rect.topleft)
-    def update(self, screen):
+    def update(self):
+        # Update logic for Herndon can be added here if needed
         pass
