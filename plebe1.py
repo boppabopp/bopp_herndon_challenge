@@ -1,5 +1,6 @@
 import pygame
 from herndon import *
+from pygame import mixer
 
 class Plebe(pygame.sprite.Sprite):
 
@@ -19,14 +20,15 @@ class Plebe(pygame.sprite.Sprite):
         self.velocity_x = 0
         self.velocity_y = 0
         self.jumping = False
+        jump_sound = mixer.Sound('audio/jump.wav')
 
     def update(self, screen, platforms, herndon):
         # Apply gravity to the Plebe's vertical velocity
         self.velocity_y += .2
 
         # Update the position based on velocities
-        self.rect.x += self.velocity_x / 9
-        self.rect.y += self.velocity_y / 9
+        self.rect.x += self.velocity_x / 11
+        self.rect.y += self.velocity_y / 11
 
         # Check if the Plebe is on the ground
         if self.rect.y >= screen.get_height() - self.rect.height:
@@ -43,12 +45,19 @@ class Plebe(pygame.sprite.Sprite):
                     self.rect.y = platform.rect.y - self.rect.height
                     self.jumping = False
 
-    def jump(self):
+        if self.rect.right >= screen.get_width():
+            self.rect.x -= 1
+        if self.rect.left <= 0:
+            self.rect.x += 1
+
+    def jump(self, jump_sound):
         # Perform a jump if not already jumping
         if not self.jumping:
             self.jumping = True
-            self.velocity_y = -25
+            self.velocity_y = -21
+            mixer.Sound.play(jump_sound)
 
     def draw(self, screen):
         # Draw the Plebe on the screen
         screen.blit(self.image, self.rect)
+

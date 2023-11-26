@@ -4,8 +4,8 @@ class Cover(pygame.sprite.Sprite):
         super().__init__()
 
         # Set the height of the tower to the full height of the screen
-        self.image = pygame.image.load('images\cover.jpg')
-        self.image = pygame.transform.scale(self.image, (100, 100))
+        self.image = pygame.image.load('images\cover.png')
+        self.image = pygame.transform.scale(self.image, (100, 200))
         self.rect = self.image.get_rect()
 
         # Set the position of the tower's bottom center
