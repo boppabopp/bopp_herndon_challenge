@@ -24,7 +24,7 @@ class Platform(pygame.sprite.Sprite):
 
         # Set initial movement direction
         self.direction = 1  # 1 for right, -1 for left
-        self.speed = 0.1  # Adjust the speed as needed
+        self.speed = 1  # Adjust the speed as needed
 
         # Counter to control movement updates
         self.counter = 0

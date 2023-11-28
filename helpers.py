@@ -13,7 +13,7 @@ def make_background(screen):
     h = screen.get_height()
 
     # Load the original background image
-    original_background = pygame.image.load('images/ckground.jpg')
-    original_background = pygame.transform.scale(original_background, (w, h))
+    original_background = pygame.image.load('images/ckground.jpg').convert_alpha()
+    original_background = pygame.transform.smoothscale(original_background, (w, h))
 
     return original_background
