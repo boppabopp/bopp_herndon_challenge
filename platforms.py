@@ -1,7 +1,9 @@
 import pygame
 from random import randint
 
+
 class Platform(pygame.sprite.Sprite):
+    # initialize variables for platform class and inherit from sprite class
     def __init__(self, screen, y):
         super().__init__()
 
@@ -10,13 +12,10 @@ class Platform(pygame.sprite.Sprite):
         self.image.fill((150, 150, 150))
         self.rect = self.image.get_rect()
 
-        # Get the width of the screen
+        # Get the width of the screen, find the range that the x can start in, create random x positions
+        # to be randomly in that range
         screen_width = screen.get_width()
-
-        # Define the range of x-coordinates for the platform based on Herndon's position
         range_of_herndon_x = (screen_width / 2 + 80 - 150, screen_width / 2 + 80 + 150)
-
-        # Set a random x-coordinate within the specified range
         random_x = randint(int(range_of_herndon_x[0]), int(range_of_herndon_x[1]))
 
         # Set the position of the platform as a vector

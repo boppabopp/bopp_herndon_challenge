@@ -5,9 +5,10 @@ class Menu:
         self.screen = screen
         self.font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 40)  # Choose an appropriate font
         self.title_font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 60)  # Choose a larger font for the title
-        button_width = 400
+        button_width = 200
         button_height = 100
-        self.start_button = pygame.Rect((screen.get_width() - button_width) // 2, screen.get_height() // 2, button_width, button_height)
+        self.start_button = pygame.Rect((screen.get_width() - button_width) // 2, screen.get_height() // 2 - 100,
+                                        button_width, button_height)
 
     def display_menu(self):
         # Set background color to white

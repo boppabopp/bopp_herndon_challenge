@@ -3,26 +3,29 @@ from herndon import *
 from pygame import mixer
 import math
 
+
 class Plebe(pygame.sprite.Sprite):
 
-    def __init__(self, screen, image, radius, score):
+    # initialize variables, inherit from sprite class
+    def __init__(self, screen, image, radius, score, x_pos):
         super().__init__()
 
-        # Load the Plebe image and scale it
+        # Load the Plebe image and smooth scale it
         self.image = image
         self.image = pygame.transform.smoothscale(image, (50, 100))
 
         # Set the initial position of the Plebe
         self.rect = self.image.get_rect()
-        self.rect.x = screen.get_width() / 2
-        self.rect.y = screen.get_height() - self.rect.height
+        self.x_pos = x_pos
+        self.rect.x = x_pos
+        self.rect.y = screen.get_height() - self.rect.height #starts the plebes at the bottom of the screen
 
         # Set initial velocities and jumping status
         self.velocity_x = 0
         self.velocity_y = 0
         self.jumping = False
-        jump_sound = mixer.Sound('audio/jump.wav')
 
+        # set radius and score
         self.radius = radius
         self.score = score
 
@@ -40,17 +43,13 @@ class Plebe(pygame.sprite.Sprite):
             self.velocity_y = 0
             self.jumping = False
 
+        # check if the Plebe is on a platform
         platform_collisions_y = pygame.sprite.spritecollide(self, platforms, False)
         for platform in platform_collisions_y:
             if self.velocity_y > 0 and self.rect.bottom - 8 <= platform.rect.top:
                 self.velocity_y = 0
                 self.rect.y = platform.rect.y - self.rect.height
                 self.jumping = False
-
-        if self.rect.right >= screen.get_width():
-            self.rect.x -= 1
-        if self.rect.left <= 0:
-            self.rect.x += 1
 
     def jump(self, jump_sound):
         # Perform a jump if not already jumping

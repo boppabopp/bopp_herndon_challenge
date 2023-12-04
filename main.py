@@ -1,5 +1,4 @@
 import pygame
-import sys
 from plebe1 import *
 from helpers import make_background
 from herndon import Herndon
@@ -25,18 +24,19 @@ MENU_STATE = 0
 GAME_STATE = 1
 game_state = MENU_STATE  # Initial state is the menu
 
-# Create the Plebe sprites for Player 1 and Player 2
-plebe1 = Plebe(screen, pygame.image.load('images/plebe.png').convert_alpha(), 20, 0)
-plebe_group = pygame.sprite.Group()
-plebe_group.add(plebe1)
-
-plebe2 = Plebe(screen, pygame.image.load('images/plebe.png').convert_alpha(), 20, 0)
-plebe_group.add(plebe2)
-
 # Create the Herndon sprite
 herndon1 = Herndon(screen)
 herndon_group = pygame.sprite.Group()
 herndon_group.add(herndon1)
+
+# Create the Plebe sprites for Player 1 and Player 2
+plebe1 = Plebe(screen, pygame.image.load('images/plebe.png').convert_alpha(), 25, 0, herndon1.rect.centerx - 20)
+plebe_group = pygame.sprite.Group()
+plebe_group.add(plebe1)
+
+plebe2 = Plebe(screen, pygame.image.load('images/plebe_g.png').convert_alpha(), 25, 0, + 20)
+plebe_group.add(plebe2)
+
 
 # Create the Cover sprite
 cover1 = Cover(screen, herndon1, 20)
@@ -63,10 +63,8 @@ timer_font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 40)
 score_font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 35)
 winner_font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 80)
 
-# Initialize timer and scores
+# Initialize timer
 timer_sec = 60
-score1 = 0
-score2 = 0
 
 # Initialize the game start time, last collision time, and end time
 start_time = pygame.time.get_ticks()
@@ -78,6 +76,7 @@ cooldown_duration = 1000  # 1000 milliseconds = 1 second
 
 menu = Menu(screen)
 menu_displayed = True
+
 
 def show_timer():
     global timer_sec, game_over
@@ -96,22 +95,15 @@ def show_scores():
     screen.blit(score1_text, (WIDTH - 300, 25))
     screen.blit(score2_text, (WIDTH - 300, 60))
 
-def show_winner(winner):
-    if winner == 0:
-        winner_text = winner_font.render("It's a Tie!", True, (0, 0, 0))
-    else:
-        winner_text = winner_font.render(f"Player {winner} Wins!", True, (0, 0, 0))
-
-    text_rect = winner_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-    screen.blit(winner_text, text_rect)
-
-def show_game_over_screen(winner):
+def show_game_over_screen(score1, score2):
+    global game_over
     game_over_font = pygame.font.Font('fonts/From Cartoon Blocks.ttf', 60)
     game_over_text = game_over_font.render("Game Over", True, (0, 0, 0))
 
-    if winner == 0:
+    if score1 == score2 and game_over:
         result_text = game_over_font.render("It's a Tie!", True, (0, 0, 0))
     else:
+        winner = 1 if score1 > score2 else 2
         result_text = game_over_font.render(f"Player {winner} Wins!", True, (0, 0, 0))
 
     game_over_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
@@ -146,20 +138,22 @@ while running:
             running = False
 
     if menu_displayed:
-        menu.display_menu()
+        menu1 = Menu(screen)
+        menu1.display_menu()
         pygame.display.flip()
 
         for event in pygame.event.get():
-            if menu.handle_input(event):  # Pass the event to handle_input
-                    menu_displayed = False
-                    start_time = pygame.time.get_ticks()
-                    score1 = 0
-                    score2 = 0
-                    plebe1.rect.midbottom = herndon1.rect.midbottom
-                    plebe2.rect.midbottom = herndon1.rect.midbottom
+            if menu1.handle_input(event):
+                menu_displayed = False
+                start_time = pygame.time.get_ticks()
+                plebe1.score = 0
+                plebe2.score = 0
+                plebe1.rect.midbottom = (herndon1.rect.centerx - 20, herndon1.rect.bottom)
+                plebe2.rect.midbottom = (herndon1.rect.centerx + 20, herndon1.rect.bottom)
+        pygame.display.flip()
     else:
         if game_over:
-            play_again_button, quit_button = show_game_over_screen(1 if score1 > score2 else (2 if score2 > score1 else 0))
+            play_again_button, quit_button = show_game_over_screen(plebe1.score, plebe2.score)
             pygame.display.flip()
 
             # Check for button clicks
@@ -171,8 +165,6 @@ while running:
                     if play_again_button.collidepoint(mouse_pos):
                         menu_displayed = True
                         game_over = False
-                        plebe1.rect.midbottom = herndon1.rect.midbottom
-                        plebe2.rect.midbottom = herndon1.rect.midbottom
                     elif quit_button.collidepoint(mouse_pos):
                         running = False
             continue
@@ -180,24 +172,24 @@ while running:
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_RIGHT]:
-            plebe1.velocity_x = 6
-        elif keys[pygame.K_LEFT]:
-            plebe1.velocity_x = -6
-        else:
-            plebe1.velocity_x = 0
-
-        if keys[pygame.K_UP]:
-            plebe1.jump(jump_sound)
-
-        if keys[pygame.K_d]:
             plebe2.velocity_x = 6
-        elif keys[pygame.K_a]:
+        elif keys[pygame.K_LEFT]:
             plebe2.velocity_x = -6
         else:
             plebe2.velocity_x = 0
 
-        if keys[pygame.K_w]:
+        if keys[pygame.K_UP]:
             plebe2.jump(jump_sound)
+
+        if keys[pygame.K_d]:
+            plebe1.velocity_x = 6
+        elif keys[pygame.K_a]:
+            plebe1.velocity_x = -6
+        else:
+            plebe1.velocity_x = 0
+
+        if keys[pygame.K_w]:
+            plebe1.jump(jump_sound)
 
         for plebe in plebe_group:
             if plebe.check_collision(cover1):
@@ -208,11 +200,16 @@ while running:
                     plebe.score += 1
                     last_collision_time = current_time
 
+            if plebe.rect.right >= screen.get_width():
+                plebe.rect.x = screen.get_width() - 50
+            if plebe.rect.left <= 0:
+                plebe.rect.x = 0
+
         plebe_group.update(screen, platform_group, herndon1)
         herndon_group.update()
         herndon1.update()
         cover_group.update()
-        platform_group.update(screen, herndon1, plebe1)
+        platform_group.update(screen, herndon1, (plebe for plebe in plebe_group))
 
         screen.blit(background, (0, 0))
 
@@ -235,6 +232,25 @@ while running:
 
         show_timer()
         show_scores()
+
+        # Check for game over condition
+        if game_over:
+            play_again_button, quit_button = show_game_over_screen(plebe1.score, plebe2.score)
+            pygame.display.flip()
+
+            # Check for button clicks
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = event.pos
+                    if play_again_button.collidepoint(mouse_pos):
+                        menu_displayed = True
+                        game_over = False
+                        plebe1.rect.midbottom = herndon1.rect.midbottom
+                        plebe2.rect.midbottom = herndon1.rect.midbottom
+                    elif quit_button.collidepoint(mouse_pos):
+                        running = False
 
     clock.tick(60)
     pygame.display.flip()
