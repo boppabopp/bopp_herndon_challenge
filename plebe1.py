@@ -17,8 +17,8 @@ class Plebe(pygame.sprite.Sprite):
         # Set the initial position of the Plebe
         self.rect = self.image.get_rect()
         self.x_pos = x_pos
-        self.rect.x = x_pos
-        self.rect.y = screen.get_height() - self.rect.height #starts the plebes at the bottom of the screen
+        # self.rect.x = x_pos
+        # self.rect.y = screen.get_height() - self.rect.height  # starts the plebes at the bottom of the screen
 
         # Set initial velocities and jumping status
         self.velocity_x = 0

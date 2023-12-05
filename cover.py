@@ -4,7 +4,7 @@ class Cover(pygame.sprite.Sprite):
         super().__init__()
 
         # Set the height of the tower to the full height of the screen
-        self.image = pygame.image.load('images\cover.png').convert_alpha()
+        self.image = pygame.image.load('images\cover.png').convert_alpha()  # convert alpha ensures transparency
         self.image = pygame.transform.smoothscale(self.image, (100, 200))
         self.rect = self.image.get_rect()
 

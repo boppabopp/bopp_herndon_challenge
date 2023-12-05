@@ -22,8 +22,8 @@ class Platform(pygame.sprite.Sprite):
         self.rect.midbottom = (random_x, y)
 
         # Set initial movement direction
-        self.direction = 1  # 1 for right, -1 for left
-        self.speed = 1  # Adjust the speed as needed
+        self.direction = 1
+        self.speed = 1
 
         # Counter to control movement updates
         self.counter = 0
@@ -36,12 +36,14 @@ class Platform(pygame.sprite.Sprite):
         if self.counter >= 1 / self.speed:
             # Check if the platform is within the bounds of Herndon before moving
             if (herndon.rect.left < self.rect.left and self.direction == -1) or \
-               (herndon.rect.right > self.rect.right and self.direction == 1):
+                    (herndon.rect.right > self.rect.right and self.direction == 1):
+                # Move the platform in the specified direction
                 self.rect.x += self.direction
 
             # Reverse direction if the platform reaches the screen's edge
             if self.rect.right >= herndon.rect.right or self.rect.left <= herndon.rect.left:
-                self.direction = -self.direction  # Reverse direction
+                # Reverse the direction of movement
+                self.direction = -self.direction
 
-            # Reset the counter
+            # Reset the counter to restart the counting for the next movement update
             self.counter = 0
